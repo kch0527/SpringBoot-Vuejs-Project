@@ -1,6 +1,8 @@
 package com.shoppingMall.controller;
 
 import com.shoppingMall.request.GoodsCreate;
+import com.shoppingMall.service.GoodsService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -13,21 +15,14 @@ import java.util.Map;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class GoodsController {
 
+    private final GoodsService goodsService;
+
     @PostMapping("/posts")
-    public Map<String, String> post(@RequestBody @Valid GoodsCreate goodsCreate, BindingResult result){
-        if (result.hasErrors()){
-            List<FieldError> fieldErrors = result.getFieldErrors();
-            FieldError fieldError = fieldErrors.get(0);
-            String fieldName = fieldError.getField();
-            String defaultMessage = fieldError.getDefaultMessage();
-
-            Map<String, String> error = new HashMap<>();
-            error.put(fieldName, defaultMessage);
-            return error;
-        }
-
+    public Map<String, String> post(@RequestBody @Valid GoodsCreate request){
+        goodsService.saveGoods(request);
         return Map.of();
     }
 }
