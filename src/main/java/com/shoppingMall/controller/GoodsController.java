@@ -1,5 +1,6 @@
 package com.shoppingMall.controller;
 
+import com.shoppingMall.entity.Goods;
 import com.shoppingMall.request.GoodsCreate;
 import com.shoppingMall.service.GoodsService;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +21,13 @@ public class GoodsController {
 
     private final GoodsService goodsService;
 
-    @PostMapping("/posts")
-    public Map<String, String> post(@RequestBody @Valid GoodsCreate request){
-        goodsService.saveGoods(request);
-        return Map.of();
+    @PostMapping("/goods")
+    public void post(@RequestBody @Valid GoodsCreate request){
+       goodsService.saveGoods(request);
+    }
+
+    @GetMapping("/goods/{goodsId}")
+    public Goods get(@PathVariable Long goodsId){
+        return goodsService.getGoods(goodsId);
     }
 }

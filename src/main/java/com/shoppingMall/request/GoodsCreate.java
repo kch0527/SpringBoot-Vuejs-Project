@@ -1,5 +1,6 @@
 package com.shoppingMall.request;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -24,4 +25,9 @@ public class GoodsCreate {
         this.content = content;
     }
 
+    @Builder
+    public GoodsCreate(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 }

@@ -1,7 +1,9 @@
 package com.shoppingMall.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shoppingMall.entity.Goods;
 import com.shoppingMall.repository.GoodsRepository;
+import com.shoppingMall.request.GoodsCreate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +19,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -30,6 +33,9 @@ public class GoodsControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
     private GoodsRepository goodsRepository;
 
     @BeforeEach
@@ -40,21 +46,39 @@ public class GoodsControllerTest {
     @Test
     @DisplayName("/posts 요청")
     void test() throws Exception {
-        mockMvc.perform(post("/posts")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"title\": \"상품명 입니다.\", \"content\": \"상품소개 입니다.\"}")
+
+        GoodsCreate request = GoodsCreate.builder()
+                .title("상품명 입니다.")
+                .content("상품소개 입니다.")
+                .build();
+
+        String json = objectMapper.writeValueAsString(request);
+
+        System.out.println("------------------------");
+        System.out.println(json);
+        System.out.println("------------------------");
+
+        mockMvc.perform(post("/goods")
+                        .contentType(APPLICATION_JSON)
+                        .content(json)
                 )
                 .andExpect(status().isOk())
-                .andExpect(content().string("Hello"))
+                .andExpect(content().string(""))
                 .andDo(print());
     }
 
     @Test
     @DisplayName("/posts 요청시 title 값은 필수다.")
     void test2() throws Exception {
-        mockMvc.perform(post("/posts")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"title\": null, \"content\": \"내용입니다.\"}")
+        GoodsCreate request = GoodsCreate.builder()
+                .content("상품소개 입니다.")
+                .build();
+
+        String json = objectMapper.writeValueAsString(request);
+
+        mockMvc.perform(post("/goods")
+                        .contentType(APPLICATION_JSON)
+                        .content(json)
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value("400"))
@@ -65,11 +89,18 @@ public class GoodsControllerTest {
 
     @Test
     @DisplayName("/posts 요청시 db에 값 저장")
-    void testSaveGoods() throws Exception {
+    void test3() throws Exception {
+
+        GoodsCreate request = GoodsCreate.builder()
+                .title("상품명 입니다.")
+                .content("상품소개 입니다.")
+                .build();
+        String json = objectMapper.writeValueAsString(request);
+
         //when 이러한 요청을 했을 때
-        mockMvc.perform(post("/posts")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"title\": \"상품명 입니다.\", \"content\": \"상품소개 입니다.\"}")
+        mockMvc.perform(post("/goods")
+                        .contentType(APPLICATION_JSON)
+                        .content(json)
                 )
                 .andExpect(status().isOk())
                 .andDo(print());
@@ -80,5 +111,24 @@ public class GoodsControllerTest {
         assertEquals("상품명 입니다.", goods.getTitle());
         assertEquals("상품소개 입니다.", goods.getContent());
 
+    }
+
+    @Test
+    @DisplayName("단일 조회")
+    void test4() throws Exception {
+        Goods requestGoods = Goods.builder()
+                .title("자켓")
+                .content("따뜻함")
+                .build();
+        goodsRepository.save(requestGoods);
+
+        mockMvc.perform(get("/goods/{goodsId}", requestGoods.getId())
+                        .contentType(APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(requestGoods.getId()))
+                .andExpect(jsonPath("$.title").value("자켓"))
+                .andExpect(jsonPath("$.content").value("따뜻함"))
+                .andDo(print());
     }
 }
