@@ -3,6 +3,7 @@ package com.shoppingMall.service;
 import com.shoppingMall.entity.Goods;
 import com.shoppingMall.repository.GoodsRepository;
 import com.shoppingMall.request.GoodsCreate;
+import com.shoppingMall.response.GoodsResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -55,7 +56,7 @@ class GoodsServiceTest {
         goodsRepository.save(requestGoods);
 
         //when
-        Goods goods = goodsService.getGoods(requestGoods.getId());
+        GoodsResponse goods = goodsService.getGoods(requestGoods.getId());
 
         //then
         Assertions.assertNotNull(goods);

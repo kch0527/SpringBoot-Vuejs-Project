@@ -2,6 +2,7 @@ package com.shoppingMall.controller;
 
 import com.shoppingMall.entity.Goods;
 import com.shoppingMall.request.GoodsCreate;
+import com.shoppingMall.response.GoodsResponse;
 import com.shoppingMall.service.GoodsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,7 @@ public class GoodsController {
     }
 
     @GetMapping("/goods/{goodsId}")
-    public Goods get(@PathVariable Long goodsId){
+    public GoodsResponse get(@PathVariable Long goodsId){
         return goodsService.getGoods(goodsId);
     }
 }

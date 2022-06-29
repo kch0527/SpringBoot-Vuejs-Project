@@ -117,7 +117,7 @@ public class GoodsControllerTest {
     @DisplayName("단일 조회")
     void test4() throws Exception {
         Goods requestGoods = Goods.builder()
-                .title("자켓")
+                .title("012345678901234")
                 .content("따뜻함")
                 .build();
         goodsRepository.save(requestGoods);
@@ -127,7 +127,7 @@ public class GoodsControllerTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(requestGoods.getId()))
-                .andExpect(jsonPath("$.title").value("자켓"))
+                .andExpect(jsonPath("$.title").value("0123456789"))
                 .andExpect(jsonPath("$.content").value("따뜻함"))
                 .andDo(print());
     }

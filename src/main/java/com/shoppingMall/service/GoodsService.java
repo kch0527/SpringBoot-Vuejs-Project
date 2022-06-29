@@ -3,6 +3,7 @@ package com.shoppingMall.service;
 import com.shoppingMall.entity.Goods;
 import com.shoppingMall.repository.GoodsRepository;
 import com.shoppingMall.request.GoodsCreate;
+import com.shoppingMall.response.GoodsResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,10 +25,16 @@ public class GoodsService {
         goodsRepository.save(goods);
     }
 
-    public Goods getGoods(Long goodsId) {
+    public GoodsResponse getGoods(Long goodsId) {
         Goods goods = goodsRepository.findById(goodsId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품"));
 
-        return goods;
+        GoodsResponse goodsResponse = GoodsResponse.builder()
+                .id(goods.getId())
+                .title(goods.getTitle())
+                .content(goods.getContent())
+                .build();
+
+        return goodsResponse;
     }
 }
