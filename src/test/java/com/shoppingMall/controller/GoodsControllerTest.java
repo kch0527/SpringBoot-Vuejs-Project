@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shoppingMall.entity.Goods;
 import com.shoppingMall.repository.GoodsRepository;
 import com.shoppingMall.request.GoodsCreate;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +20,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -129,6 +132,36 @@ public class GoodsControllerTest {
                 .andExpect(jsonPath("$.id").value(requestGoods.getId()))
                 .andExpect(jsonPath("$.title").value("0123456789"))
                 .andExpect(jsonPath("$.content").value("따뜻함"))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("목록 조회")
+    void test5() throws Exception {
+
+        Goods goods1 = goodsRepository.save(Goods.builder()
+                .title("자켓")
+                .content("따뜻함")
+                .build());
+
+        Goods goods2 = goodsRepository.save(Goods.builder()
+                .title("반팔")
+                .content("쉬원함")
+                .build());
+
+
+        mockMvc.perform(get("/goods")
+                        .contentType(APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", is(2)))
+                .andExpect(jsonPath("$.[0].id").value(goods1.getId()))
+                .andExpect(jsonPath("$.[0].title").value("자켓"))
+                .andExpect(jsonPath("$.[0].content").value("따뜻함"))
+
+                .andExpect(jsonPath("$.[1].id").value(goods2.getId()))
+                .andExpect(jsonPath("$.[1].title").value("반팔"))
+                .andExpect(jsonPath("$.[1].content").value("쉬원함"))
                 .andDo(print());
     }
 }

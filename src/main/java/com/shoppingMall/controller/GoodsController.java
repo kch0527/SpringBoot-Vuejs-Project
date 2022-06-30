@@ -31,4 +31,9 @@ public class GoodsController {
     public GoodsResponse get(@PathVariable Long goodsId){
         return goodsService.getGoods(goodsId);
     }
+
+    @GetMapping("/goods")
+    public List<GoodsResponse> getList(){
+        return goodsService.getList();
+    }
 }
