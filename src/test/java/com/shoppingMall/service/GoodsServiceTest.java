@@ -10,10 +10,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.data.domain.Sort.Direction.*;
 
 @SpringBootTest
 class GoodsServiceTest {
@@ -68,6 +75,33 @@ class GoodsServiceTest {
 
 
     @Test
+    @DisplayName("1페이지 조회")
+    void test3(){
+        //given
+
+        List<Goods> goodsList = IntStream.range(0, 30)
+                        .mapToObj(i -> {
+                            return Goods.builder()
+                                    .title("상품이름 : " + i)
+                                    .content("상품설명 : " + i)
+                                    .build();
+                        })
+                                .collect(Collectors.toList());
+        goodsRepository.saveAll(goodsList);
+
+        Pageable pageable = PageRequest.of(0, 5, DESC, "id");
+        //when
+        List<GoodsResponse> list = goodsService.getList(pageable);
+
+        //then
+        assertEquals(5L, list.size());
+        assertEquals("상품이름 : 29", list.get(0).getTitle());
+        assertEquals("상품이름 : 25", list.get(4).getTitle());
+    }
+
+
+/*
+    @Test
     @DisplayName("목록 조회")
     void test3(){
         //given
@@ -89,4 +123,5 @@ class GoodsServiceTest {
         //then
         assertEquals(2L, list.size());
     }
+ */
 }

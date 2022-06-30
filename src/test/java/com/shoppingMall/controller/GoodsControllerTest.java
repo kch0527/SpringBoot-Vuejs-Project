@@ -20,6 +20,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -139,29 +143,24 @@ public class GoodsControllerTest {
     @DisplayName("목록 조회")
     void test5() throws Exception {
 
-        Goods goods1 = goodsRepository.save(Goods.builder()
-                .title("자켓")
-                .content("따뜻함")
-                .build());
+        List<Goods> goodsList = IntStream.range(0, 30)
+                .mapToObj(i -> {
+                    return Goods.builder()
+                            .title("상품이름 : " + i)
+                            .content("상품설명 : " + i)
+                            .build();
+                })
+                .collect(Collectors.toList());
+        goodsRepository.saveAll(goodsList);
 
-        Goods goods2 = goodsRepository.save(Goods.builder()
-                .title("반팔")
-                .content("쉬원함")
-                .build());
-
-
-        mockMvc.perform(get("/goods")
+        mockMvc.perform(get("/goods?page=1&sort=id,desc")
                         .contentType(APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(2)))
-                .andExpect(jsonPath("$.[0].id").value(goods1.getId()))
-                .andExpect(jsonPath("$.[0].title").value("자켓"))
-                .andExpect(jsonPath("$.[0].content").value("따뜻함"))
-
-                .andExpect(jsonPath("$.[1].id").value(goods2.getId()))
-                .andExpect(jsonPath("$.[1].title").value("반팔"))
-                .andExpect(jsonPath("$.[1].content").value("쉬원함"))
+                .andExpect(jsonPath("$.length()", is(5)))
+                .andExpect(jsonPath("$.[0].id").value(30))
+                .andExpect(jsonPath("$.[0].title").value("상품이름 : 29"))
+                .andExpect(jsonPath("$.[0].content").value("상품설명 : 29"))
                 .andDo(print());
     }
 }

@@ -6,6 +6,8 @@ import com.shoppingMall.response.GoodsResponse;
 import com.shoppingMall.service.GoodsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +35,7 @@ public class GoodsController {
     }
 
     @GetMapping("/goods")
-    public List<GoodsResponse> getList(){
-        return goodsService.getList();
+    public List<GoodsResponse> getList(@PageableDefault(size = 5) Pageable pageable){
+        return goodsService.getList(pageable);
     }
 }
