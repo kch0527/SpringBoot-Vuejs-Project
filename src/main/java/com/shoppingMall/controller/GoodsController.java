@@ -2,6 +2,7 @@ package com.shoppingMall.controller;
 
 import com.shoppingMall.entity.Goods;
 import com.shoppingMall.request.GoodsCreate;
+import com.shoppingMall.request.GoodsSearch;
 import com.shoppingMall.response.GoodsResponse;
 import com.shoppingMall.service.GoodsService;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +36,7 @@ public class GoodsController {
     }
 
     @GetMapping("/goods")
-    public List<GoodsResponse> getList(@PageableDefault(size = 5) Pageable pageable){
-        return goodsService.getList(pageable);
+    public List<GoodsResponse> getList(@ModelAttribute GoodsSearch goodsSearch){
+        return goodsService.getList(goodsSearch);
     }
 }

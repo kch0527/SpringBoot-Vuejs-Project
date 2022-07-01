@@ -3,6 +3,7 @@ package com.shoppingMall.service;
 import com.shoppingMall.entity.Goods;
 import com.shoppingMall.repository.GoodsRepository;
 import com.shoppingMall.request.GoodsCreate;
+import com.shoppingMall.request.GoodsSearch;
 import com.shoppingMall.response.GoodsResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -89,14 +90,16 @@ class GoodsServiceTest {
                                 .collect(Collectors.toList());
         goodsRepository.saveAll(goodsList);
 
-        Pageable pageable = PageRequest.of(0, 5, DESC, "id");
+        GoodsSearch goodsSearch = GoodsSearch.builder()
+                .page(1)
+                .build();
+
         //when
-        List<GoodsResponse> list = goodsService.getList(pageable);
+        List<GoodsResponse> list = goodsService.getList(goodsSearch);
 
         //then
-        assertEquals(5L, list.size());
+        assertEquals(10L, list.size());
         assertEquals("상품이름 : 29", list.get(0).getTitle());
-        assertEquals("상품이름 : 25", list.get(4).getTitle());
     }
 
 

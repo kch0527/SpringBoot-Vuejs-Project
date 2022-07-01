@@ -3,6 +3,7 @@ package com.shoppingMall.service;
 import com.shoppingMall.entity.Goods;
 import com.shoppingMall.repository.GoodsRepository;
 import com.shoppingMall.request.GoodsCreate;
+import com.shoppingMall.request.GoodsSearch;
 import com.shoppingMall.response.GoodsResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,9 +44,9 @@ public class GoodsService {
         return goodsResponse;
     }
 
-    public List<GoodsResponse> getList(Pageable pageable) {
+    public List<GoodsResponse> getList(GoodsSearch goodsSearch) {
         //Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Direction.DESC ,"id"));
-        return goodsRepository.findAll(pageable).stream()
+        return goodsRepository.getList(goodsSearch).stream()
                 .map(GoodsResponse::new)
                 .collect(Collectors.toList());
     }

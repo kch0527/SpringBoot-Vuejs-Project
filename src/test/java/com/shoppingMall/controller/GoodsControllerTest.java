@@ -153,12 +153,35 @@ public class GoodsControllerTest {
                 .collect(Collectors.toList());
         goodsRepository.saveAll(goodsList);
 
-        mockMvc.perform(get("/goods?page=1&sort=id,desc")
+        mockMvc.perform(get("/goods?page=1&size=10")
                         .contentType(APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(5)))
-                .andExpect(jsonPath("$.[0].id").value(30))
+                .andExpect(jsonPath("$.length()", is(10)))
+                .andExpect(jsonPath("$.[0].title").value("상품이름 : 29"))
+                .andExpect(jsonPath("$.[0].content").value("상품설명 : 29"))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("페이지가 0이면 1로 가져옴")
+    void test6() throws Exception {
+
+        List<Goods> goodsList = IntStream.range(0, 30)
+                .mapToObj(i -> {
+                    return Goods.builder()
+                            .title("상품이름 : " + i)
+                            .content("상품설명 : " + i)
+                            .build();
+                })
+                .collect(Collectors.toList());
+        goodsRepository.saveAll(goodsList);
+
+        mockMvc.perform(get("/goods?page=0&size=10")
+                        .contentType(APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", is(10)))
                 .andExpect(jsonPath("$.[0].title").value("상품이름 : 29"))
                 .andExpect(jsonPath("$.[0].content").value("상품설명 : 29"))
                 .andDo(print());
