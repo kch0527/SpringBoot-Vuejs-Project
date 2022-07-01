@@ -1,7 +1,9 @@
 package com.shoppingMall.controller;
 
 import com.shoppingMall.entity.Goods;
+import com.shoppingMall.entity.GoodsEditor;
 import com.shoppingMall.request.GoodsCreate;
+import com.shoppingMall.request.GoodsEdit;
 import com.shoppingMall.request.GoodsSearch;
 import com.shoppingMall.response.GoodsResponse;
 import com.shoppingMall.service.GoodsService;
@@ -38,5 +40,15 @@ public class GoodsController {
     @GetMapping("/goods")
     public List<GoodsResponse> getList(@ModelAttribute GoodsSearch goodsSearch){
         return goodsService.getList(goodsSearch);
+    }
+
+    @PatchMapping("/goods/{goodsId}")
+    public void edit(@PathVariable Long goodsId, @RequestBody @Valid GoodsEdit request){
+         goodsService.edit(goodsId, request);
+    }
+
+    @DeleteMapping("/goods/{goodsId}")
+    public void delete(@PathVariable Long goodsId){
+        goodsService.delete(goodsId);
     }
 }

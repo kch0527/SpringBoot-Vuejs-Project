@@ -3,6 +3,7 @@ package com.shoppingMall.service;
 import com.shoppingMall.entity.Goods;
 import com.shoppingMall.repository.GoodsRepository;
 import com.shoppingMall.request.GoodsCreate;
+import com.shoppingMall.request.GoodsEdit;
 import com.shoppingMall.request.GoodsSearch;
 import com.shoppingMall.response.GoodsResponse;
 import org.junit.jupiter.api.Assertions;
@@ -100,6 +101,70 @@ class GoodsServiceTest {
         //then
         assertEquals(10L, list.size());
         assertEquals("상품이름 : 29", list.get(0).getTitle());
+    }
+
+    @Test
+    @DisplayName("상품명 수정")
+    void test4(){
+        //given
+        Goods goods = Goods.builder()
+                .title("반팔")
+                .content("쉬원함")
+                .build();
+        goodsRepository.save(goods);
+
+        GoodsEdit goodsEdit = GoodsEdit.builder()
+                .title("긴팔")
+                .content("쉬원함")
+                .build();
+
+        //when
+        goodsService.edit(goods.getId(), goodsEdit);
+
+        //then
+        Goods updateGoods = goodsRepository.findById(goods.getId()).orElseThrow(() -> new RuntimeException("상품이 없음 id : " + goods.getId()));
+
+        Assertions.assertEquals("긴팔", updateGoods.getTitle());
+
+    }
+
+    @Test
+    @DisplayName("상품내용 수정")
+    void test5(){
+        //given
+        Goods goods = Goods.builder()
+                .title("반팔")
+                .content("쉬원함")
+                .build();
+        goodsRepository.save(goods);
+
+        GoodsEdit goodsEdit = GoodsEdit.builder()
+                .title("반팔")
+                .content("더움")
+                .build();
+
+        //when
+        goodsService.edit(goods.getId(), goodsEdit);
+
+        //then
+        Goods updateGoods = goodsRepository.findById(goods.getId()).orElseThrow(() -> new RuntimeException("상품이 없음 id : " + goods.getId()));
+
+        Assertions.assertEquals("더움", updateGoods.getContent());
+    }
+
+    @Test
+    @DisplayName("삭제기능")
+    void test6(){
+        Goods goods = Goods.builder()
+                .title("반팔")
+                .content("쉬원함")
+                .build();
+        goodsRepository.save(goods);
+
+        goodsService.delete(goods.getId());
+
+        Assertions.assertEquals(0, goodsRepository.count());
+
     }
 
 

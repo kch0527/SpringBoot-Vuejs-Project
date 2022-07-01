@@ -1,14 +1,13 @@
 package com.shoppingMall.entity;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.shoppingMall.request.GoodsEdit;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class Goods {
 
@@ -25,5 +24,16 @@ public class Goods {
     public Goods(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    public GoodsEditor.GoodsEditorBuilder toEditor(){
+        return GoodsEditor.builder()
+                .title(title)
+                .content(content);
+    }
+
+    public void edit(GoodsEditor goodsEditor) {
+        title = goodsEditor.getTitle();
+        content = goodsEditor.getContent();
     }
 }

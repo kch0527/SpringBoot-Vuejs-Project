@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shoppingMall.entity.Goods;
 import com.shoppingMall.repository.GoodsRepository;
 import com.shoppingMall.request.GoodsCreate;
+import com.shoppingMall.request.GoodsEdit;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -27,8 +28,7 @@ import java.util.stream.IntStream;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -185,5 +185,44 @@ public class GoodsControllerTest {
                 .andExpect(jsonPath("$.[0].title").value("상품이름 : 29"))
                 .andExpect(jsonPath("$.[0].content").value("상품설명 : 29"))
                 .andDo(print());
+    }
+
+    @Test
+    @DisplayName("상품 수정")
+    void test7() throws Exception {
+
+        Goods goods = Goods.builder()
+                .title("반팔")
+                .content("쉬원함")
+                .build();
+        goodsRepository.save(goods);
+
+        GoodsEdit goodsEdit = GoodsEdit.builder()
+                .title("긴팔")
+                .content("쉬원함")
+                .build();
+
+        mockMvc.perform(patch("/goods/{goodsId}", goods.getId())
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(goodsEdit))
+                )
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("삭제 기능")
+    void test8() throws Exception {
+        Goods goods = Goods.builder()
+                .title("반팔")
+                .content("쉬원함")
+                .build();
+        goodsRepository.save(goods);
+
+        mockMvc.perform(delete("/goods/{goodsId}",goods.getId())
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
+
     }
 }

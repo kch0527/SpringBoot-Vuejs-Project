@@ -1,8 +1,10 @@
 package com.shoppingMall.service;
 
 import com.shoppingMall.entity.Goods;
+import com.shoppingMall.entity.GoodsEditor;
 import com.shoppingMall.repository.GoodsRepository;
 import com.shoppingMall.request.GoodsCreate;
+import com.shoppingMall.request.GoodsEdit;
 import com.shoppingMall.request.GoodsSearch;
 import com.shoppingMall.response.GoodsResponse;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -49,5 +52,23 @@ public class GoodsService {
         return goodsRepository.getList(goodsSearch).stream()
                 .map(GoodsResponse::new)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void edit(Long id, GoodsEdit goodsEdit){
+        Goods goods = goodsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품"));
+
+        GoodsEditor.GoodsEditorBuilder goodsEditorBuilder = goods.toEditor();
+
+        GoodsEditor goodsEditor = goodsEditorBuilder.title(goodsEdit.getTitle())
+                .content(goodsEdit.getContent())
+                .build();
+
+        goods.edit(goodsEditor);
+    }
+
+    public void delete(Long id) {
+        Goods goods = goodsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품"));
+        goodsRepository.delete(goods);
     }
 }
