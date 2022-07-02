@@ -1,5 +1,6 @@
 package com.shoppingMall.request;
 
+import com.shoppingMall.exception.InvalidRequest;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,17 +18,16 @@ public class GoodsCreate {
     @NotBlank(message = "컨텐츠가 없음")
     private String content;
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
 
     @Builder
     public GoodsCreate(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    public void validate(){
+        if (title.contains("바보")){
+            throw new InvalidRequest("title", "상품명에 바보를 포함할 수 없습니다.");
+        }
     }
 }

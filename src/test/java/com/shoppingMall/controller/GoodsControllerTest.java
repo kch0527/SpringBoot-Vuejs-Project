@@ -85,8 +85,7 @@ public class GoodsControllerTest {
 
         mockMvc.perform(post("/goods")
                         .contentType(APPLICATION_JSON)
-                        .content(json)
-                )
+                        .content(json))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value("400"))
                 .andExpect(jsonPath("$.message").value("잘못된 요청"))
@@ -222,6 +221,52 @@ public class GoodsControllerTest {
         mockMvc.perform(delete("/goods/{goodsId}",goods.getId())
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andDo(print());
+
+    }
+
+    @Test
+    @DisplayName("상품 조회 예외처리")
+    void test9() throws Exception{
+
+        mockMvc.perform(get("/goods/{goodsId}", 1L)
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("상품 수정 예외처리")
+    void test10() throws Exception{
+
+        GoodsEdit goodsEdit = GoodsEdit.builder()
+                .title("긴팔")
+                .content("쉬원함")
+                .build();
+
+        mockMvc.perform(patch("/goods/{goodsId}", 1L)
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(goodsEdit))
+                )
+                .andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("상품 등록시 상품명 특정언어 제한")
+    void test11() throws Exception{
+
+        GoodsCreate request = GoodsCreate.builder()
+                .title("바보입니다.")
+                .content("상품소개 입니다.")
+                .build();
+        String json = objectMapper.writeValueAsString(request);
+
+        mockMvc.perform(post("/goods")
+                        .contentType(APPLICATION_JSON)
+                        .content(json)
+                )
+                .andExpect(status().isBadRequest())
                 .andDo(print());
 
     }

@@ -2,6 +2,7 @@ package com.shoppingMall.controller;
 
 import com.shoppingMall.entity.Goods;
 import com.shoppingMall.entity.GoodsEditor;
+import com.shoppingMall.exception.InvalidRequest;
 import com.shoppingMall.request.GoodsCreate;
 import com.shoppingMall.request.GoodsEdit;
 import com.shoppingMall.request.GoodsSearch;
@@ -29,7 +30,8 @@ public class GoodsController {
 
     @PostMapping("/goods")
     public void post(@RequestBody @Valid GoodsCreate request){
-       goodsService.saveGoods(request);
+        request.validate();
+        goodsService.saveGoods(request);
     }
 
     @GetMapping("/goods/{goodsId}")
