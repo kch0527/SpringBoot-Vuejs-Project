@@ -1,6 +1,7 @@
 package com.shoppingMall.service;
 
 import com.shoppingMall.entity.Goods;
+import com.shoppingMall.exception.GoodsNotFound;
 import com.shoppingMall.repository.GoodsRepository;
 import com.shoppingMall.request.GoodsCreate;
 import com.shoppingMall.request.GoodsEdit;
@@ -34,13 +35,13 @@ class GoodsServiceTest {
     private GoodsService goodsService;
 
     @BeforeEach
-    void clear(){
+    void clear() {
         goodsRepository.deleteAll();
     }
 
     @Test
     @DisplayName("상품 등록")
-    void test1(){
+    void test1() {
         //given
         GoodsCreate goodsCreate = GoodsCreate.builder()
                 .title("상품명 입니다.")
@@ -58,7 +59,7 @@ class GoodsServiceTest {
 
     @Test
     @DisplayName("단일 조회")
-    void test2(){
+    void test2() {
         //given
         Goods requestGoods = Goods.builder()
                 .title("자켓")
@@ -78,17 +79,17 @@ class GoodsServiceTest {
 
     @Test
     @DisplayName("1페이지 조회")
-    void test3(){
+    void test3() {
         //given
 
         List<Goods> goodsList = IntStream.range(0, 30)
-                        .mapToObj(i -> {
-                            return Goods.builder()
-                                    .title("상품이름 : " + i)
-                                    .content("상품설명 : " + i)
-                                    .build();
-                        })
-                                .collect(Collectors.toList());
+                .mapToObj(i -> {
+                    return Goods.builder()
+                            .title("상품이름 : " + i)
+                            .content("상품설명 : " + i)
+                            .build();
+                })
+                .collect(Collectors.toList());
         goodsRepository.saveAll(goodsList);
 
         GoodsSearch goodsSearch = GoodsSearch.builder()
@@ -105,7 +106,7 @@ class GoodsServiceTest {
 
     @Test
     @DisplayName("상품명 수정")
-    void test4(){
+    void test4() {
         //given
         Goods goods = Goods.builder()
                 .title("반팔")
@@ -130,7 +131,7 @@ class GoodsServiceTest {
 
     @Test
     @DisplayName("상품내용 수정")
-    void test5(){
+    void test5() {
         //given
         Goods goods = Goods.builder()
                 .title("반팔")
@@ -153,8 +154,8 @@ class GoodsServiceTest {
     }
 
     @Test
-    @DisplayName("삭제기능")
-    void test6(){
+    @DisplayName("상품 삭제 기능")
+    void test6() {
         Goods goods = Goods.builder()
                 .title("반팔")
                 .content("쉬원함")
@@ -168,28 +169,57 @@ class GoodsServiceTest {
     }
 
 
-/*
     @Test
-    @DisplayName("목록 조회")
-    void test3(){
+    @DisplayName("단일 조회 예외처리")
+    void test7() {
         //given
-        goodsRepository.saveAll(List.of(
-                Goods.builder()
-                        .title("자켓")
-                        .content("따뜻함")
-                        .build(),
+        Goods requestGoods = Goods.builder()
+                .title("자켓")
+                .content("따뜻함")
+                .build();
+        goodsRepository.save(requestGoods);
 
-                Goods.builder()
-                    .title("반팔")
-                    .content("쉬원함")
-                    .build()
-        ));
+        //expected
+        assertThrows(GoodsNotFound.class, () -> {
+            goodsService.getGoods(requestGoods.getId() + 1L);
+        });
 
-        //when
-        List<GoodsResponse> list = goodsService.getList();
-
-        //then
-        assertEquals(2L, list.size());
     }
- */
+
+    @Test
+    @DisplayName("상품 삭제 예외처리")
+    void test8() {
+        //given
+        Goods goods = Goods.builder()
+                .title("반팔")
+                .content("쉬원함")
+                .build();
+        goodsRepository.save(goods);
+
+        //expected
+        assertThrows(GoodsNotFound.class, () -> {
+            goodsService.delete(goods.getId() + 1L);
+        });
+    }
+
+    @Test
+    @DisplayName("상품 수정 예외처리")
+    void test9() {
+        //given
+        Goods goods = Goods.builder()
+                .title("반팔")
+                .content("쉬원함")
+                .build();
+        goodsRepository.save(goods);
+
+        GoodsEdit goodsEdit = GoodsEdit.builder()
+                .title("반팔")
+                .content("더움")
+                .build();
+
+        //expected
+        assertThrows(GoodsNotFound.class, () -> {
+            goodsService.edit(goods.getId() + 1L, goodsEdit);
+        });
+    }
 }

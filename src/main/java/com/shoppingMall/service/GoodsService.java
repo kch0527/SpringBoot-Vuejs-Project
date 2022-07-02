@@ -2,6 +2,7 @@ package com.shoppingMall.service;
 
 import com.shoppingMall.entity.Goods;
 import com.shoppingMall.entity.GoodsEditor;
+import com.shoppingMall.exception.GoodsNotFound;
 import com.shoppingMall.repository.GoodsRepository;
 import com.shoppingMall.request.GoodsCreate;
 import com.shoppingMall.request.GoodsEdit;
@@ -36,7 +37,7 @@ public class GoodsService {
 
     public GoodsResponse getGoods(Long goodsId) {
         Goods goods = goodsRepository.findById(goodsId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품"));
+                .orElseThrow(GoodsNotFound::new);
 
         GoodsResponse goodsResponse = GoodsResponse.builder()
                 .id(goods.getId())
@@ -56,7 +57,7 @@ public class GoodsService {
 
     @Transactional
     public void edit(Long id, GoodsEdit goodsEdit){
-        Goods goods = goodsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품"));
+        Goods goods = goodsRepository.findById(id).orElseThrow(GoodsNotFound::new);
 
         GoodsEditor.GoodsEditorBuilder goodsEditorBuilder = goods.toEditor();
 
@@ -68,7 +69,7 @@ public class GoodsService {
     }
 
     public void delete(Long id) {
-        Goods goods = goodsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품"));
+        Goods goods = goodsRepository.findById(id).orElseThrow(GoodsNotFound::new);
         goodsRepository.delete(goods);
     }
 }
