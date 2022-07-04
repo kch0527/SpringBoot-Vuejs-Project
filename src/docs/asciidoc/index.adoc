@@ -1,0 +1,36 @@
+= Chan API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+== 상품 단건 조회
+
+=== 요청
+
+include::{snippets}/goods-inquiry/curl-request.adoc[]
+
+include::{snippets}/goods-inquiry/path-parameters.adoc[]
+
+=== 응답
+
+include::{snippets}/goods-inquiry/http-response.adoc[]
+
+include::{snippets}/goods-inquiry/response-fields.adoc[]
+
+== 상품 등록
+
+=== 요청
+
+include::{snippets}/goods-create/curl-request.adoc[]
+
+include::{snippets}/goods-create/request-fields.adoc[]
+
+=== 응답
+
+include::{snippets}/goods-create/http-response.adoc[]
+
+
+
