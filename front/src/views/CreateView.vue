@@ -29,7 +29,7 @@ const create = function (){
     <el-input v-model="content" type="textarea" rows="15" placeholder="상품정보를 입력해주세요"/>
   </div>
 
-  <div>
+  <div class="mt-2">
     <el-button type="primary" @click="create()">상품 등록</el-button>
   </div>
 
