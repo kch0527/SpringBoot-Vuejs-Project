@@ -2,16 +2,22 @@
 import {ref} from "vue";
 
 import axios from 'axios';
+import {useRouter} from "vue-router";
 
 const title = ref("")
 const content = ref("")
 
+const router = useRouter()
+
 const create = function (){
   axios.post("/api/goods",{
     title : title.value,
-    content : content.value
+    content : content.value,
+  })
+  .then(() => {
+    router.replace({name: "home"});
   });
-}
+};
 </script>
 
 <template>
