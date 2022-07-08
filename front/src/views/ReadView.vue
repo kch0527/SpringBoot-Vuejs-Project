@@ -58,6 +58,14 @@ onMounted(() => {
       </div>
     </el-col>
   </el-row>
+
+  <el-row class="mt-3">
+    <el-col>
+      <div class="d-flex justify-content-end">
+        <el-button type="warning" @click="delete(goodsId)">삭제</el-button>
+      </div>
+    </el-col>
+  </el-row>
 </template>
 
 <style scoped lang="scss">
