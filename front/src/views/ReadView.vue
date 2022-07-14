@@ -29,6 +29,11 @@ onMounted(() => {
    goods.value = response.data;
   });
 })
+
+const deleteEvent = () => {
+
+}
+
 </script>
 
 <template>
@@ -62,7 +67,7 @@ onMounted(() => {
   <el-row class="mt-3">
     <el-col>
       <div class="d-flex justify-content-end">
-        <el-button type="warning" @click="delete(goodsId)">삭제</el-button>
+        <el-button type="warning" @click="deleteEvent()">삭제</el-button>
       </div>
     </el-col>
   </el-row>
